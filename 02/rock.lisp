@@ -20,9 +20,9 @@
   '(("A" . :rock)
     ("B" . :paper)
     ("C" . :scissors)
-    ("X" . :rock)
-    ("Y" . :paper)
-    ("Z" . :scissors)))
+    ("X" . :lose)
+    ("Y" . :draw)
+    ("Z" . :win)))
 
 (defparameter premium-for-shape
   '((:rock . 1)
@@ -31,15 +31,23 @@
 
 ;; rock > sci > paper > rock > ...
 (defparameter round-winner
-  '(((:rock :rock) . 0)
-    ((:rock :paper) . 2)
-    ((:rock :scissors) . 1)
-    ((:paper :rock) . 1)
-    ((:paper :paper) . 0)
-    ((:paper :scissors) . 2)
-    ((:scissors :rock) . 2)
-    ((:scissors :paper) . 1)
-    ((:scissors :scissors) . 0)))
+  '(((:rock :rock) . :draw)
+    ((:rock :paper) . :win)
+    ((:rock :scissors) . :lose)
+    ((:paper :rock) . :lose)
+    ((:paper :paper) . :draw)
+    ((:paper :scissors) . :win)
+    ((:scissors :rock) . :win)
+    ((:scissors :paper) . :lose)
+    ((:scissors :scissors) . :draw)))
+
+(defparameter next-move
+  (mapcar (lambda (x)
+            (let ((other (caar x))
+                  (my (cadar x))
+                  (advice (cdr x)))
+              `((,other ,advice) . ,my)))
+          round-winner))
 
 (defun translate-shape (raw)
   (assocdr raw shapes :test #'equal))
@@ -47,17 +55,20 @@
 (defun get-premium (shape)
   (assocdr shape premium-for-shape))
 
+(defun shape-for-advice (round)
+  (assocdr round next-move :test #'equal))
+
 (defun round-premium-points (round)
   (mapcar #'get-premium round))
 
-(defun winner (round)
+(defun winsp (round)
   (assocdr round round-winner :test #'equal))
 
 (defun round-winner-points (round)
-  (case (winner round)
-    (1 '(6 0))
-    (2 '(0 6))
-    (0 '(3 3))))
+  (case (winsp round)
+    (:lose '(6 0))
+    (:win '(0 6))
+    (:draw '(3 3))))
 
 (defun sum-round-points (px0 &rest pxs)
   (apply #'mapcar
@@ -71,6 +82,11 @@
             (list (translate-shape (car round))
                   (translate-shape (cadr round))))
           raw-strategy))
+
+(defun map-advice-to-shape (strategy)
+  (mapcar (lambda (round)
+            (list (car round) (shape-for-advice round)))
+          strategy))
 
 (defun calculate-scores (strategy)
   (mapcar (lambda (round)
@@ -86,7 +102,12 @@
 (->> #P"input.txt"
   read-strategy
   parse-strategy
+  map-advice-to-shape
   calculate-scores
-  sum-player2-scores)
+  sum-player2-scores
+  )
 
+;; part 1 result:
  ; => 13446 (14 bits, #x3486)
+;; part 2 result:
+ ; => 13509 (14 bits, #x34C5)
