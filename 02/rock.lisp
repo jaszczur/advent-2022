@@ -47,8 +47,24 @@
 (defun get-premium (shape)
   (assocdr shape premium-for-shape))
 
+(defun round-premium-points (round)
+  (mapcar #'get-premium round))
+
 (defun winner (round)
   (assocdr round round-winner :test #'equal))
+
+(defun round-winner-points (round)
+  (case (winner round)
+    (1 '(6 0))
+    (2 '(0 6))
+    (0 '(3 3))))
+
+(defun sum-round-points (px0 &rest pxs)
+  (apply #'mapcar
+         (lambda (round-points-0 &rest round-points-others)
+           (apply #'+ round-points-0 round-points-others))
+         px0
+         pxs))
 
 (defun parse-strategy (raw-strategy)
   (mapcar (lambda (round)
@@ -58,13 +74,8 @@
 
 (defun calculate-scores (strategy)
   (mapcar (lambda (round)
-            (let ((premium1 (get-premium (car round)))
-                  (premium2 (get-premium (cadr round)))
-                  (winner (winner round)))
-              (case winner
-                (1 (list (+ 6 premium1) premium2))
-                (2 (list premium1 (+ 6 premium2)))
-                (0 (list (+ 3 premium1) (+ 3 premium2))))))
+            (sum-round-points (round-premium-points round)
+                              (round-winner-points round)))
           strategy))
 
 (defun sum-player2-scores (scores)
