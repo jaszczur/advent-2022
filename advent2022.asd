@@ -20,7 +20,8 @@
                (:file "02/rock")
                (:file "03/code")
                (:file "04/code")
-               (:file "05/solution")))
+               (:file "05/solution")
+               (:file "06/solution")))
 
 (asdf:defsystem :advent2022/test
   :description "Test suite"
@@ -32,6 +33,7 @@
 
   :serial t
   :components ((:file "package.test")
+               (:file "04/tests")
                (:file "05/tests"))
   :perform (asdf:test-op (op system)
                          (funcall (read-from-string "1am:run"))))
