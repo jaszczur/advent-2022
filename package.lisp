@@ -28,5 +28,9 @@
 (defpackage :advent2022.day06
   (:use :cl :advent2022.utils :arrow-macros)
   (:import-from :alexandria :curry)
-  (:export :solve-part-1
-           :solve-part-2))
+  (:export
+   :window-with-index
+   :find-sop-marker
+   :find-som-marker
+   :solve-part-1
+   :solve-part-2))

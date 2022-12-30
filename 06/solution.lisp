@@ -1,30 +1,50 @@
 (in-package :advent2022.day06)
 
-(defun read-stream (path)
-  (coerce (car (read-lines path)) 'list))
-
-(defun window (size lst)
+(defun window-with-index (size lst)
   (let ((acc (make-list 0)))
     (loop for elem in lst
+          for idx from 0
           for wdw = (setf acc
                           (cons elem
                                 (if (= size (list-length acc))
                                     (butlast acc)
                                     acc)))
           when (= size (list-length acc))
-            collect (reverse wdw))))
+            collect (list idx (reverse wdw)))))
+
+(defun duplicatesp (lst &key (test #'=))
+  (loop for (elem . rest) on lst
+        when (member elem rest :test test)
+        do (return elem)))
+
+(defun uniquep (lst &key (test #'=))
+  (not (duplicatesp lst :test test)))
+
+(defun seq-unique (wdw)
+  (uniquep (second wdw) :test #'eq))
+
+(defun find-marker (str &key window-size)
+  (->> (coerce str 'list)
+    (window window-size)
+    (find-if #'seq-unique)
+    car
+    (+ 1)))
+
+(defun find-sop-marker (str)
+  (find-marker str :window-size 4))
+
+(defun find-som-marker (str)
+  (find-marker str :window-size 14))
 
 
-(window 3 '(1 2 3 4 5 6 7 8 9 10))
+(defun solve-part-1 ()
+  (->> (project-file "06/input.txt")
+    read-lines
+    car
+    find-sop-marker))
 
-(progn
-  (defun solve-part-1 ()
-    (->> (project-file "06/input.txt")
-      read-stream
-      (window 3)))
-
-  (solve-part-1))
-
-
-
-(defun solve-part-2 () nil)
+(defun solve-part-2 ()
+  (->> (project-file "06/input.txt")
+    read-lines
+    car
+    find-som-marker))
