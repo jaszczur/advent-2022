@@ -24,13 +24,13 @@
         (+ (- code (char-code #\a)) 1))))
 
 ;; part 1
-(->> (project-file "03/input.txt")
-  read-lines
-  (mapcar #'parse-rucksack)
-  (mapcar #'find-duplicates)
-  (mapcar #'priority-for-item)
-  (reduce #'+)
-  )
+(defun solve-part-1 ()
+  (->> (project-file "03/input.txt")
+    read-lines
+    (mapcar #'parse-rucksack)
+    (mapcar #'find-duplicates)
+    (mapcar #'priority-for-item)
+    (reduce #'+)))
  ; => 7990 (13 bits, #x1F36)
 
 ;; part 2
@@ -43,12 +43,11 @@
     (when (and (find item1 (second rucksacks)) (find item1 (third rucksacks)))
             (return item1))))
 
-(->> (project-file "03/input.txt")
-  read-lines
-  assign-to-groups
-  (mapcar #'find-duplicates-in-group)
-  (mapcar #'priority-for-item)
-  (reduce #'+)
-  )
-
+(defun solve-part-2 ()
+  (->> (project-file "03/input.txt")
+    read-lines
+    assign-to-groups
+    (mapcar #'find-duplicates-in-group)
+    (mapcar #'priority-for-item)
+    (reduce #'+)))
  ; => 2602 (12 bits, #xA2A)

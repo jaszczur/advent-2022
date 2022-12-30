@@ -92,13 +92,14 @@
     (mapcar #'cadr)
     (reduce #'+)))
 
-(->> (project-file "02/input.txt")
-  read-strategy
-  parse-strategy
-  map-advice-to-shape
-  calculate-scores
-  sum-player2-scores
-  )
+(defun solve ()
+  (->> (project-file "02/input.txt")
+    read-strategy
+    parse-strategy
+    map-advice-to-shape
+    calculate-scores
+    sum-player2-scores
+    ))
 
 ;; part 1 result:
  ; => 13446 (14 bits, #x3486)

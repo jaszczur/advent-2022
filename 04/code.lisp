@@ -26,19 +26,16 @@
 
 ;; part 1
 
-(->> (project-file "04/input.txt")
-  read-lines
-  (mapcar #'parse-line)
-  (count-if (lambda (ranges)
-              (either-fully-contains (first ranges) (second ranges)))))
+(defun solve-part-1 ()
+ (->> (project-file "04/input.txt")
+   read-lines
+   (mapcar #'parse-line)
+   (count-if (lambda (ranges)
+               (either-fully-contains (first ranges) (second ranges))))))
 
-                                        ; => 602 (10 bits, #x25A)
-
-
-;; part 2
-
-(->> (project-file "04/input.txt")
-  read-lines
-  (mapcar #'parse-line)
-  (count-if (lambda (ranges)
-              (overlap (first ranges) (second ranges)))))
+(defun solve-part-2 ()
+  (->> (project-file "04/input.txt")
+    read-lines
+    (mapcar #'parse-line)
+    (count-if (lambda (ranges)
+                (overlap (first ranges) (second ranges))))))

@@ -84,4 +84,3 @@
       (mapcan #'last)
       (reduce (alexandria:curry #'concatenate 'string)))))
 
- ; => "GRTSWNJHH"

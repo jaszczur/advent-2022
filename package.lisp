@@ -15,7 +15,9 @@
   (:use :cl :advent2022.utils :arrow-macros))
 
 (defpackage :advent2022.day04
-  (:use :cl :advent2022.utils :arrow-macros))
+  (:use :cl :advent2022.utils :arrow-macros)
+  (:export :solve-part-1
+           :solve-part-2))
 
 (defpackage :advent2022.day05
   (:use :cl :advent2022.utils :arrow-macros)

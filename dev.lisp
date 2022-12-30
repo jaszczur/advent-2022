@@ -18,6 +18,7 @@
 
 #+nil
 (progn
+  (load-and-test)
 
   (test)
 

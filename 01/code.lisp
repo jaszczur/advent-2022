@@ -24,13 +24,12 @@
   (subseq (sort log #'>) 0 n))
 
 
-(let ((totals-log (read-totals-log (project-file "01/input.txt"))))
-  (values
-   (top-calories totals-log)            ; => 74711 (17 bits, #x123D7)
+(defun solve-part-1 ()
+  (let ((totals-log (read-totals-log (project-file "01/input.txt"))))
+    (top-calories totals-log))) ; => 74711 (17 bits, #x123D7)
 
-   (->> totals-log
-     most-calories
-     (reduce #'+))
- ; => 209481 (18 bits, #x33249)
-   )
-  )
+(defun solve-part-2 ()
+  (let ((totals-log (read-totals-log (project-file "01/input.txt"))))
+     (->> totals-log
+       most-calories
+       (reduce #'+)))) ; => 209481 (18 bits, #x33249)
