@@ -35,10 +35,25 @@
   (or (fully-contains set1 set2)
       (fully-contains set2 set1)))
 
+(defun overlap (set1 set2)
+  (not (null (intersection set1 set2))))
+
+
+;; part 1
+
 (->> #P"input.txt"
   read-lines
   (mapcar #'parse-line)
   (count-if (lambda (ranges)
-               (either-fully-contains (first ranges) (second ranges)))))
+              (either-fully-contains (first ranges) (second ranges)))))
 
- ; => 602 (10 bits, #x25A)
+                                        ; => 602 (10 bits, #x25A)
+
+
+;; part 2
+
+(->> #P"input.txt"
+  read-lines
+  (mapcar #'parse-line)
+  (count-if (lambda (ranges)
+              (overlap (first ranges) (second ranges)))))
