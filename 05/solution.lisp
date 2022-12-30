@@ -17,11 +17,12 @@
 
 
 (defun cleanup-raw-crates (line)
-  (let* ((line (cl-ppcre:regex-replace-all "\\[" line ","))
-         (line (cl-ppcre:regex-replace-all "\\]" line ""))
-         (line (cl-ppcre:regex-replace-all "    " line ","))
-         (line (cl-ppcre:regex-replace-all " " line "")))
-    (cdr (cl-ppcre:split "," line))))
+  (-<> line
+    (cl-ppcre:regex-replace-all "\\[" <> ",")
+    (cl-ppcre:regex-replace-all "\\]" <> "")
+    (cl-ppcre:regex-replace-all "    " <> ",")
+    (cl-ppcre:regex-replace-all " " <> "")
+    (cdr (cl-ppcre:split "," <>))))
 
 
 (assert (equal
