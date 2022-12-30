@@ -13,7 +13,10 @@
        (cleanup-raw-crates "[F] [Q]     [W] [T] [V] [J] [V] [M]")
        '("F" "Q" "" "W" "T" "V" "J" "V" "M"))))
 
-(test solve-part-1-test
+(test integration-test
   (is (equal
        (solve-part-1)
-       "GRTSWNJHH")))
+       "GRTSWNJHH"))
+  (is (equal
+       (solve-part-2)
+       "QLFQDBBHM")))

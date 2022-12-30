@@ -50,13 +50,15 @@
           (- (parse-integer stack-from) 1)
           (- (parse-integer stack-to) 1))))
 
-(defun apply-move (state move)
+(defun apply-move (state move crane-model)
   (let* ((amount (first move))
          (src-idx (second move))
          (dst-idx (third move))
          (src-stk (nth src-idx state))
          (dst-stk (nth dst-idx state))
-         (crates-to-move (reverse (last src-stk amount)))
+         (crates-to-move (cond
+                           ((eq crane-model :CrateMover9000) (reverse (last src-stk amount)))
+                           ((eq crane-model :CrateMover9001) (last src-stk amount))))
          (src-stk (butlast src-stk amount))
          (dst-stk (concatenate 'list dst-stk crates-to-move)))
     (loop for stack in state
@@ -66,21 +68,28 @@
                     ((= idx dst-idx) dst-stk)
                     (t stack)))))
 
-(defun run-moves (state moves)
+(defun run-moves (state moves crane-model)
   (if (null moves)
       state
-      (run-moves (apply-move state (car moves))
-                 (cdr moves))))
+      (run-moves (apply-move state (car moves) crane-model)
+                 (cdr moves)
+                 crane-model)))
 
 (defun read-moves (file-path)
   (->> file-path
     read-lines
     (mapcar #'parse-raw-moves)))
 
-(defun solve-part-1 ()
+(defun run-simulation (&key crane-model)
   (let ((initial-state (read-state (project-file "05/input-initial.txt")))
         (moves (read-moves (project-file "05/input-moves.txt"))))
-    (->> (run-moves initial-state moves)
+    (->> (run-moves initial-state moves crane-model)
       (mapcan #'last)
       (reduce (alexandria:curry #'concatenate 'string)))))
+
+(defun solve-part-1 ()
+  (run-simulation :crane-model :CrateMover9000))
+
+(defun solve-part-2 ()
+  (run-simulation :crane-model :CrateMover9001))
 
