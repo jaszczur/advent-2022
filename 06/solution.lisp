@@ -1,15 +1,19 @@
 (in-package :advent2022.day06)
 
 (defun window-with-index (size lst)
-  (let ((acc (make-list 0)))
+  (let ((acc (make-list 0))
+        (filled nil))
     (loop for elem in lst
           for idx from 0
           for wdw = (setf acc
                           (cons elem
-                                (if (= size (list-length acc))
+                                (if (or filled (= size (list-length acc)))
                                     (butlast acc)
                                     acc)))
-          when (= size (list-length acc))
+          ;; Optimization: do not recalculate wdw length once its already full
+          for wdw-filled = (or filled
+                               (setf filled (= size (list-length wdw))))
+          when wdw-filled
             collect (list idx (reverse wdw)))))
 
 (defun duplicatesp (lst &key (test #'=))
