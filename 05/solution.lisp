@@ -77,10 +77,11 @@
     read-lines
     (mapcar #'parse-raw-moves)))
 
-(let ((initial-state (read-state (project-file "05/input-initial.txt")))
-      (moves (read-moves (project-file "05/input-moves.txt"))))
-  (->> (run-moves initial-state moves)
-    (mapcan #'last)
-    (reduce (alexandria:curry #'concatenate 'string))))
+(defun solve-part-1 ()
+  (let ((initial-state (read-state (project-file "05/input-initial.txt")))
+        (moves (read-moves (project-file "05/input-moves.txt"))))
+    (->> (run-moves initial-state moves)
+      (mapcan #'last)
+      (reduce (alexandria:curry #'concatenate 'string)))))
 
  ; => "GRTSWNJHH"

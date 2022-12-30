@@ -8,10 +8,11 @@
   (ql:quickload :advent2022/test))
 
 (defun test ()
-  (asdf:test-system :advent2022))
+  (1am:run))
 
 (defun load-and-test ()
-  (load-all))
+  (load-all)
+  (asdf:test-system :advent2022))
 
 (load-all)
 
@@ -19,5 +20,6 @@
 (progn
 
   (test)
+
 
   )

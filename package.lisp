@@ -19,4 +19,5 @@
 
 (defpackage :advent2022.day05
   (:use :cl :advent2022.utils :arrow-macros)
-  (:export :cleanup-raw-crates))
+  (:export :cleanup-raw-crates
+           :solve-part-1))
