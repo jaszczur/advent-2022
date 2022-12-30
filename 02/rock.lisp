@@ -1,10 +1,3 @@
-(ql:quickload '(:split-sequence
-                :serapeum
-                :arrow-macros))
-
-(defpackage :advent2022.day02
-  (:use :cl :arrow-macros :serapeum))
-
 (in-package :advent2022.day02)
 
 (defun parse-line (line)
@@ -99,7 +92,7 @@
     (mapcar #'cadr)
     (reduce #'+)))
 
-(->> #P"input.txt"
+(->> (project-file "02/input.txt")
   read-strategy
   parse-strategy
   map-advice-to-shape

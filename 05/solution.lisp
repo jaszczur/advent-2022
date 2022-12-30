@@ -1,20 +1,4 @@
-(ql:quickload '(:split-sequence
-                :serapeum
-                :alexandria
-                :arrow-macros
-                :cl-ppcre))
-
-(defpackage :advent2022.day05
-  (:use :cl :arrow-macros))
-
 (in-package :advent2022.day05)
-
-(defun read-lines (file-path)
-  (with-open-file (file file-path)
-    (loop for line = (read-line file nil nil)
-          while line
-          collecting line)))
-
 
 (defun cleanup-raw-crates (line)
   (-<> line
@@ -23,19 +7,6 @@
     (cl-ppcre:regex-replace-all "    " <> ",")
     (cl-ppcre:regex-replace-all " " <> "")
     (cdr (cl-ppcre:split "," <>))))
-
-
-(assert (equal
-         (cleanup-raw-crates "[N] [G]     [Q]")
-         '("N" "G" "" "Q")))
-
-(assert (equal
-         (cleanup-raw-crates "[N] [G]                     [Q]")
-         '("N" "G" "" "" "" "" "" "Q")))
-
-(assert (equal
-         (cleanup-raw-crates "[F] [Q]     [W] [T] [V] [J] [V] [M]")
-         '("F" "Q" "" "W" "T" "V" "J" "V" "M")))
 
 (defun parse-raw-crates (raw-crates)
   (mapcar (lambda (crate)
@@ -106,8 +77,8 @@
     read-lines
     (mapcar #'parse-raw-moves)))
 
-(let ((initial-state (read-state #P"input-initial.txt"))
-      (moves (read-moves #P"input-moves.txt")))
+(let ((initial-state (read-state (project-file "05/input-initial.txt")))
+      (moves (read-moves (project-file "05/input-moves.txt"))))
   (->> (run-moves initial-state moves)
     (mapcan #'last)
     (reduce (alexandria:curry #'concatenate 'string))))

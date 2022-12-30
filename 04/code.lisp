@@ -1,19 +1,4 @@
-(ql:quickload '(:split-sequence
-                :serapeum
-                :alexandria
-                :arrow-macros))
-
-(defpackage :advent2022.day04
-  (:use :cl :arrow-macros))
-
 (in-package :advent2022.day04)
-
-
-(defun read-lines (file-path)
-  (with-open-file (file file-path)
-    (loop for line = (read-line file nil nil)
-          while line
-          collecting line)))
 
 (defun parse-assignment (raw)
   (let* ((range (->> raw
@@ -41,7 +26,7 @@
 
 ;; part 1
 
-(->> #P"input.txt"
+(->> (project-file "04/input.txt")
   read-lines
   (mapcar #'parse-line)
   (count-if (lambda (ranges)
@@ -52,7 +37,7 @@
 
 ;; part 2
 
-(->> #P"input.txt"
+(->> (project-file "04/input.txt")
   read-lines
   (mapcar #'parse-line)
   (count-if (lambda (ranges)

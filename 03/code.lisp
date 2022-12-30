@@ -1,18 +1,4 @@
-(ql:quickload '(:split-sequence
-                :serapeum
-                :arrow-macros))
-
-(defpackage :advent2022.day03
-  (:use :cl :arrow-macros))
-
 (in-package :advent2022.day03)
-
-
-(defun read-lines (file-path)
-  (with-open-file (file file-path)
-    (loop for line = (read-line file nil nil)
-          while line
-          collecting line)))
 
 (defun parse-rucksack (line)
   (let ((middle (/ (length line) 2)))
@@ -38,9 +24,9 @@
         (+ (- code (char-code #\a)) 1))))
 
 ;; part 1
-(->> #P"input.txt"
+(->> (project-file "03/input.txt")
   read-lines
-  (mapcar #'parse-line)
+  (mapcar #'parse-rucksack)
   (mapcar #'find-duplicates)
   (mapcar #'priority-for-item)
   (reduce #'+)
@@ -57,7 +43,7 @@
     (when (and (find item1 (second rucksacks)) (find item1 (third rucksacks)))
             (return item1))))
 
-(->> #P"input.txt"
+(->> (project-file "03/input.txt")
   read-lines
   assign-to-groups
   (mapcar #'find-duplicates-in-group)
