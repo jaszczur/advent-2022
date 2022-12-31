@@ -11,20 +11,12 @@
                                 (cons elem (butlast acc)))
                 collect (list idx (reverse wdw))))))
 
-(defun duplicatesp (lst &key (test #'=))
-  (loop for (elem . rest) on lst
-        when (member elem rest :test test)
-        do (return elem)))
-
-(defun uniquep (lst &key (test #'=))
-  (not (duplicatesp lst :test test)))
-
 (defun seq-unique (wdw)
   (uniquep (second wdw) :test #'eq))
 
 (defun find-marker (str &key window-size)
   (->> (coerce str 'list)
-    (window window-size)
+    (window-with-index window-size)
     (find-if #'seq-unique)
     car
     (+ 1)))

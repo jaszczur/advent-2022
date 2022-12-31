@@ -34,6 +34,7 @@
   :serial t
   :components ((:file "package.test")
                (:file "04/tests")
-               (:file "05/tests"))
+               (:file "05/tests")
+               (:file "06/tests"))
   :perform (asdf:test-op (op system)
                          (funcall (read-from-string "1am:run"))))

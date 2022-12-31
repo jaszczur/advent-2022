@@ -2,7 +2,9 @@
   (:use :cl)
   (:export
    :project-file
-   :read-lines))
+   :read-lines
+   :duplicatesp
+   :uniquep))
 
 (defpackage :advent2022.day01
   (:use :cl :advent2022.utils :arrow-macros))
