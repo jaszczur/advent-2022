@@ -91,12 +91,30 @@
     (fs-directory-contents <>)
     (car <>)))
 
+(defun find-nodes (pred node)
+  (let ((children (when (typep node 'fs-directory)
+                    (->> node
+                      fs-directory-contents
+                      (mapcan (alexandria:curry #'find-nodes pred))))))
+    (if (funcall pred node)
+        (cons node children)
+        children)))
 
-
+(defun sum-sizes-less-than-100k (root)
+  (->> root
+    (find-nodes (lambda (node)
+                  (and (typep node 'fs-directory)
+                       (< (fs-node-size node) 100000))))
+    (mapcar #'fs-node-size)
+    (reduce #'+)))
 
 (defun solve-part-1 ()
   (->> (project-file "07/input.txt")
     read-lines
-    parse-shell-session))
+    parse-shell-session
+    sum-sizes-less-than-100k))
 
+(solve-part-1)
+
+ ; => 1644735 (21 bits, #x1918BF)
 (defun solve-part-2 () nil)
