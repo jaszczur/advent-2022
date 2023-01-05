@@ -3,10 +3,13 @@
 (defclass fs-node ()
   ((name :initarg :name
          :accessor fs-node-name)
+   (path :initarg :path
+         :accessor fs-node-path)
    (parent :initarg :parent
            :accessor fs-node-parent)
    (size :initarg :size
-         :initform nil)))
+         :initform nil
+         :accessor fs-node-size)))
 
 (defclass fs-directory (fs-node)
   ((contents :initarg :contents
@@ -24,6 +27,7 @@
 (defun create-evaluation-state ()
   (let ((root (make-instance 'fs-directory
                              :name ""
+                             :path nil
                              :parent nil)))
     (make-instance 'evaluation-state
                    :root root
@@ -32,10 +36,14 @@
 (defun eval-cmd (state cmd)
   (when (equal (car cmd) "cd")
     (if (equal (cadr cmd) "..")
+        ;; going back to parent directory
         (setf (evaluation-state-cwd state)
               (-> state evaluation-state-cwd fs-node-parent))
+
+        ;; going to child directory
         (let ((new-dir (make-instance 'fs-directory
-                                      :name (cdr cmd)
+                                      :name (cadr cmd)
+                                      :path (cons (cadr cmd) (-> state evaluation-state-cwd fs-node-path))
                                       :parent (evaluation-state-cwd state))))
           (setf (-> state evaluation-state-cwd fs-directory-contents)
                 (cons new-dir
@@ -43,19 +51,12 @@
           (setf (evaluation-state-cwd state)
                 new-dir)))))
 
-(defun add-dir (state name)
-  #+nil
-  (setf (-> state evaluation-state-cwd fs-directory-contents)
-        (cons (make-instance 'fs-directory
-                             :name name
-                             :parent (evaluation-state-cwd state))
-              (-> state evaluation-state-cwd fs-directory-contents))))
-
 (defun add-file (state file-spec)
   (setf (-> state evaluation-state-cwd fs-directory-contents)
         (cons (make-instance 'fs-file
                              :size (parse-integer (car file-spec))
                              :name (cadr file-spec)
+                             :path (cons (cadr file-spec) (-> state evaluation-state-cwd fs-node-path))
                              :parent (evaluation-state-cwd state))
               (-> state evaluation-state-cwd fs-directory-contents))))
 
@@ -64,14 +65,31 @@
          (head (car cmd)))
     (cond
       ((equal head "$") (eval-cmd state (cdr cmd)))
-      ((equal head "dir") (add-dir state (cadr cmd)))
+      ((equal head "dir") nil)
       (t (add-file state cmd)))
     state))
 
+(defun cleanup-fs-tree (node)
+  (setf (fs-node-path node) (reverse (fs-node-path node)))
+  (when (typep node 'fs-directory)
+    (setf (fs-directory-contents node)
+          (mapcar #'cleanup-fs-tree (fs-directory-contents node)))
+    (setf (fs-node-size node)
+          (->> node
+            fs-directory-contents
+            (mapcar #'fs-node-size)
+            (reduce #'+))))
+  node)
+
 (defun parse-shell-session (lines)
-  (reduce #'parse-line
-          lines
-          :initial-value (create-evaluation-state)))
+  (-<> lines
+    (reduce #'parse-line
+            <>
+            :initial-value (create-evaluation-state))
+    (evaluation-state-root <>)
+    (cleanup-fs-tree <>)
+    (fs-directory-contents <>)
+    (car <>)))
 
 (->> (project-file "07/input.txt")
   read-lines
@@ -79,18 +97,18 @@
 
 (parse-shell-session '("$ cd /"
                        "$ ls"
-                       "111 file1"
-                       "222 file2"
+                       "100 file1"
+                       "200 file2"
                        "dir dir1"
                        "dir dir2"
                        "$ cd dir1"
                        "$ ls"
-                       "333 file11"
-                       "444 file22"
+                       "300 file11"
+                       "400 file22"
                        "$ cd .."
                        "$ cd dir2"
                        "$ ls"
-                       "555 file21"
+                       "500 file21"
                        "666 file22"))
 
 
