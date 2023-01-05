@@ -21,7 +21,8 @@
                (:file "03/code")
                (:file "04/code")
                (:file "05/solution")
-               (:file "06/solution")))
+               (:file "06/solution")
+               (:file "07/solution")))
 
 (asdf:defsystem :advent2022/test
   :description "Test suite"

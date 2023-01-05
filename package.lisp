@@ -36,3 +36,8 @@
    :find-som-marker
    :solve-part-1
    :solve-part-2))
+
+(defpackage :advent2022.day07
+  (:use :cl :advent2022.utils :arrow-macros)
+  (:export :solve-part-1
+           :solve-part-2))
